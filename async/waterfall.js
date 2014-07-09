@@ -5,17 +5,22 @@ var http = require('http');
 
 async.waterfall([
 	function(callback) {
-		fs.readFile(err, data) {
-			if (err) callback(err);
-			callback(null, data);
-		}
+		fs.readFile(arg, function(err, data) {
+			if (err) return callback(err);
+			callback(null, data.toString('utf8'));
+		});
 	},
 	function(url, callback) {
 		var result = '';
 		http.get(url, function(res){
-			if (err) callback(err);
 			res.on('data', function(data){
 				result += data;
+			});
+			res.on('end', function(){
+				callback(null, result);
+			});
+			res.on('error', function(err){
+				callback(err);
 			});
 		});
 	}
